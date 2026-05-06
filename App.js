@@ -1,20 +1,35 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { ThemeProvider } from "./src/context/ThemeContext";
+import { ToastProvider } from "./src/context/ToastContext";
+import AppNavigator from "./src/navigation/AppNavigator";
+import AuthService from "./src/api/apiService";
+import AppUpdateScreen from "./src/screens/update/AppUpdateScreen";
 
 export default function App() {
+  const [versionChecked, setVersionChecked] = useState(false);
+  const [needsUpdate,    setNeedsUpdate]    = useState(false);
+  useEffect(() => {
+    AuthService.matchVersion().then((res) => {
+      setNeedsUpdate(res.isVersionMatched);
+      setVersionChecked(true);
+    });
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaProvider>
+      <ThemeProvider>
+        <ToastProvider>
+          {!versionChecked ? null : needsUpdate ? (
+            <AppUpdateScreen />
+          ) : (
+            <NavigationContainer>
+              <AppNavigator />
+            </NavigationContainer>
+          )}
+        </ToastProvider>
+      </ThemeProvider>
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
