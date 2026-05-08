@@ -5,7 +5,6 @@ import ChatwootAPI from "./chatwootApi";
 import { APP_TYPE, APP_VERSION } from "../utils/appInfo";
 
 class AuthService {
-  // ─── Login (Send OTP) ──────────────────────────────────────────────────
   static async login(phoneNumber) {
     try {
       const cleanPhone = phoneNumber.replace(/^\+91/, "");
@@ -34,7 +33,6 @@ class AuthService {
     }
   }
 
-  // ─── Verify OTP ────────────────────────────────────────────────────────
   static async verifyOTP(phoneNumber, otp) {
     try {
       const cleanPhone = phoneNumber.replace(/^\+91/, "");
@@ -43,6 +41,7 @@ class AuthService {
         otp: otp,
       });
       const responseData = response.data;
+
       if (responseData?.status === true || responseData?.statusCode === 200) {
         const userData = responseData?.data;
         const token = userData?.accessToken;
@@ -75,12 +74,10 @@ class AuthService {
     }
   }
 
-  // ─── Resend OTP ───────────────────────────────────────────────────────
   static async resendOTP(phoneNumber) {
     return await this.login(phoneNumber);
   }
 
-  // ─── Logout ────────────────────────────────────────────────────────────
   static async logout() {
     try {
       await ChatwootAPI.reset();
@@ -93,14 +90,12 @@ class AuthService {
     }
   }
 
-  // ─── Delete Account ───────────────────────────────────────────────────
   static async deleteAccount() {
     try {
       const response = await client.delete("/user/delete-account");
       const responseData = response.data;
 
       if (responseData?.status === true || responseData?.statusCode === 200) {
-        // Clear all local session data after successful deletion
         await ChatwootAPI.reset();
         await TokenManager.removeToken();
         await AsyncStorage.removeItem("userData");
@@ -123,7 +118,6 @@ class AuthService {
     }
   }
 
-  // ─── Initialize Auth from Storage ──────────────────────────────────────
   static async initializeAuth() {
     try {
       const token = await TokenManager.getToken();
@@ -141,7 +135,6 @@ class AuthService {
     }
   }
 
-  // ─── Get User Orders ──────────────────────────────────────────────────
   static async getUserOrders(page = 1, limit = 10, filters = {}) {
     try {
       const params = { page, limit, ...filters };
@@ -168,7 +161,6 @@ class AuthService {
     }
   }
 
-  // ─── Chatwoot Contact (POST with phone + fullname) ────────────────────
   static async getOrCreateChatwootContact(initialMessage = '') {
     try {
       const userData = useAuthStore.getState().user;
@@ -184,11 +176,6 @@ class AuthService {
 
 
       const responseData = response.data;
-      console.log('📊 Chatwoot Response:', {
-        status: responseData?.status,
-        contactId: responseData?.data?.chatwoot_contact_id,
-        conversationId: responseData?.data?.chatwoot_conversation_id,
-      });
 
       if (responseData?.status === true || responseData?.statusCode === 200) {
         return {
@@ -203,7 +190,6 @@ class AuthService {
         message: responseData?.message || 'Failed to get contact',
       };
     } catch (error) {
-      console.log('❌ Chatwoot Contact Error:', error.response?.data || error.message);
       return {
         success: false,
         message: error.response?.data?.message || error.message || 'Failed to get contact',
@@ -225,7 +211,6 @@ class AuthService {
     useAuthStore.getState().logout();
     return false;
   } catch (error) {
-    console.log("Error initializing auth:", error);
     useAuthStore.getState().logout();
     return false;
   }
@@ -239,7 +224,6 @@ static async matchVersion() {
       app:     'USER',
     });
     const d = response.data;
-    console.log('🔄 Version Check Response:', d)  ;
     if (d?.status === true || d?.statusCode === 200) {
       return { success: true, isVersionMatched: d?.data?.isVersionMatched ?? true };
     }
@@ -249,13 +233,11 @@ static async matchVersion() {
   }
 }
 
-  // ─── Update Profile ───────────────────────────────────────────────────
 static async updateProfile(fullname, birthDate) {
   try {
     const response = await client.post('/user/updateprofile', { fullname, birthDate });
     const responseData = response.data;
     if (responseData?.status === true || responseData?.statusCode === 200) {
-      // Sync updated name into local store + storage
       const current = useAuthStore.getState().user;
       const updated = { ...current, fullname };
       await AsyncStorage.setItem('userData', JSON.stringify(updated));
@@ -268,10 +250,8 @@ static async updateProfile(fullname, birthDate) {
   }
 }
 
-  // ─── Get Order Detail ─────────────────────────────────────────────────
   static async getOrderDetail(orderId) {
     try {
-      console.log(`📦 Fetching order detail: ${orderId}`);
       const response = await client.get(`/user/getOrderDetail/${orderId}`);
       const responseData = response.data;
 
@@ -284,7 +264,6 @@ static async updateProfile(fullname, birthDate) {
       }
       return { success: false, message: responseData?.message || "Failed to fetch order detail", data: null };
     } catch (error) {
-      console.log("❌ Get Order Detail Error:", error.response?.data || error.message);
       return { success: false, message: error.response?.data?.message || error.message || "Failed to fetch order detail", data: null };
     }
   }

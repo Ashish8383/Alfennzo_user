@@ -25,7 +25,6 @@ export default function ManageAccountScreen() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
 
-  // Animation refs
   const logoutModalScaleAnim = useRef(new Animated.Value(0)).current;
   const logoutModalOpacityAnim = useRef(new Animated.Value(0)).current;
 
@@ -76,7 +75,6 @@ export default function ManageAccountScreen() {
     },
   ];
 
-  // Open logout modal animation
   const openLogoutModal = () => {
     setShowLogoutModal(true);
     
@@ -95,7 +93,6 @@ export default function ManageAccountScreen() {
     ]).start();
   };
 
-  // Close logout modal animation
   const closeLogoutModal = () => {
     Animated.parallel([
       Animated.timing(logoutModalScaleAnim, {

@@ -13,6 +13,7 @@ import { useTheme } from '../../context/ThemeContext';
 const { width: SW } = Dimensions.get('window');
 const GREEN = '#2B8A5A';
 const GOLD  = '#F5B800';
+const TAB_BAR_HEIGHT = 90; // Approximate tab bar height with safe area
 
 const FEATURES = [
   { icon: QrCode,   label: 'Scan at\nSeat', sub: 'No seat number,\nno hassle.'  },
@@ -75,145 +76,338 @@ export default function HomeScreen() {
   });
 
   return (
-    <View style={{ flex: 1, backgroundColor: C.root, paddingTop: rs(22) }}>
+    <View style={{ flex: 1, backgroundColor: C.root }}>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor={C.headerBg} />
 
       {/* ── Sticky Header ── */}
       <Animated.View style={[st.stickyHeader, {
-        paddingTop: insets.top + rs(8), paddingBottom: rs(8),
-        backgroundColor: C.headerBg, borderBottomColor: C.headerBorder,
+        paddingTop: insets.top + rs(8), 
+        paddingBottom: rs(8),
+        backgroundColor: C.headerBg, 
+        borderBottomColor: C.headerBorder,
         opacity: headerOpacity,
       }]}>
         <View style={st.headerContent}>
-          <Image source={require('../../../assets/logo.png')} style={{ width: rs(150), height: rs(50) }} resizeMode="contain" />
+          <Image 
+            source={require('../../../assets/logo.png')} 
+            style={{ width: rs(130), height: rs(40) }} 
+            resizeMode="contain" 
+          />
         </View>
       </Animated.View>
 
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingTop: insets.top + rs(12) + rs(50), paddingBottom: rs(32), paddingHorizontal: rs(16) }}
+        contentContainerStyle={{ 
+          paddingTop: insets.top + rs(12) + rs(50),
+          // Add extra padding at bottom to prevent tab bar overlap
+          paddingBottom: TAB_BAR_HEIGHT + rs(32),
+          paddingHorizontal: rs(16),
+        }}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
-        onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: false })}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }], 
+          { useNativeDriver: false }
+        )}
+        // Add these props for better scrolling
+        bounces={true}
+        overScrollMode="always"
+        keyboardShouldPersistTaps="handled"
       >
-        {/* ── Hero ── */}
-        <View style={[st.hero, { minHeight: rs(240), marginBottom: rs(6) }]}>
-          <View style={[st.heroLeft, { paddingRight: rs(8), paddingTop: rs(4) }]}>
-            <Text style={{ fontSize: nz(24), lineHeight: nz(30), fontWeight: '800', color: C.heroTitle }}>Sit back, relax</Text>
-            <Text style={{ fontSize: nz(24), lineHeight: nz(30), fontWeight: '800', color: GOLD, marginBottom: rs(10) }}>We've got you!</Text>
-            <Text style={{ fontSize: nz(12), lineHeight: nz(19), color: C.heroDesc, marginBottom: rs(20) }}>
-              Scan the QR at your seat to explore the menu and place your order instantly.
+        {/* ── Hero Section ── */}
+        <View style={[st.hero, { minHeight: rs(225), marginBottom: rs(12) }]}>
+          <View style={[st.heroLeft, { paddingRight: rs(16), paddingTop: rs(8) }]}>
+            <Text style={{ 
+              fontSize: nz(22), 
+              lineHeight: nz(28), 
+              fontWeight: '800', 
+              color: C.heroTitle 
+            }}>
+              Sit back, relax
+            </Text>
+            <Text style={{ 
+              fontSize: nz(22), 
+              lineHeight: nz(28), 
+              fontWeight: '800', 
+              color: GOLD, 
+              marginBottom: rs(8) 
+            }}>
+              We've got you!
+            </Text>
+            <Text style={{ 
+              fontSize: nz(11), 
+              lineHeight: nz(17),
+              color: C.heroDesc, 
+              marginBottom: rs(16) 
+            }}>
+              Scan the QR at your seat to explore the{'\n'}menu and place your order instantly.
             </Text>
             <TouchableOpacity
               style={[st.scanBtn, {
-                paddingHorizontal: rs(14), paddingVertical: rs(10),
-                gap: rs(6), borderRadius: rs(10),
-                backgroundColor: C.scanBtnBg, borderColor: C.scanBtnBorder,
+                paddingHorizontal: rs(16), 
+                paddingVertical: rs(10),
+                gap: rs(8), 
+                borderRadius: rs(10),
+                backgroundColor: C.scanBtnBg, 
+                borderColor: C.scanBtnBorder,
               }]}
               activeOpacity={0.85}
-              onPress={openComingSoon}  // ← wired here
+              onPress={openComingSoon}
             >
               <QrCode size={rs(18)} color={GREEN} strokeWidth={2.2} />
-              <Text style={{ fontSize: nz(12), fontWeight: '700', color: GREEN }}>Scan Now</Text>
+              <Text style={{ fontSize: nz(12), fontWeight: '700', color: GREEN }}>
+                Scan Now
+              </Text>
               <ChevronRight size={rs(16)} color={GREEN} strokeWidth={2.5} />
             </TouchableOpacity>
           </View>
-          <View style={[st.heroRight, { width: SW * 0.43, height: rs(210), borderRadius: rs(16) }]}>
-            <Image source={require('../../../assets/banner.png')} style={st.heroImg} resizeMode="cover" />
+          <View style={[st.heroRight, { 
+            width: SW * 0.38, 
+            height: rs(180), 
+            borderRadius: rs(14),
+          }]}>
+            <Image 
+              source={require('../../../assets/banner.png')} 
+              style={st.heroImg} 
+              resizeMode="cover" 
+            />
           </View>
         </View>
 
-        {/* ── Features ── */}
+        {/* ── Features Section (Smaller & Compact) ── */}
         <View style={[st.featureCard, {
-          borderRadius: rs(16), paddingVertical: rs(16),
-          paddingHorizontal: rs(8), marginBottom: rs(25), gap: rs(8),
-          backgroundColor: C.featureCard, borderColor: C.featureBorder,
+          borderRadius: rs(14),
+          paddingVertical: rs(12),
+          paddingHorizontal: rs(12),
+          marginBottom: rs(20),
+          gap: rs(12),
+          backgroundColor: C.featureCard, 
+          borderColor: C.featureBorder,
         }]}>
           {FEATURES.map((f, i) => {
             const Icon = f.icon;
             return (
               <React.Fragment key={i}>
                 <View style={st.featureCol}>
-                  <View style={[st.featureIconWrap, { width: rs(40), height: rs(40), borderRadius: rs(10), marginBottom: rs(8), backgroundColor: C.featureIcon }]}>
-                    <Icon size={rs(22)} color={GREEN} strokeWidth={1.8} />
+                  <View style={[st.featureIconWrap, { 
+                    width: rs(36), 
+                    height: rs(36), 
+                    borderRadius: rs(8), 
+                    marginBottom: rs(6), 
+                    backgroundColor: C.featureIcon 
+                  }]}>
+                    <Icon size={rs(20)} color={GREEN} strokeWidth={1.8} />
                   </View>
-                  <Text style={{ fontSize: nz(11), lineHeight: nz(14), fontWeight: '700', color: C.featureLabel, textAlign: 'center', marginBottom: rs(4) }}>{f.label}</Text>
-                  <Text style={{ fontSize: nz(10), lineHeight: nz(13), color: C.featureSub, textAlign: 'center', fontWeight: '500' }}>{f.sub}</Text>
+                  <Text style={{ 
+                    fontSize: nz(11), 
+                    lineHeight: nz(15), 
+                    fontWeight: '700', 
+                    color: C.featureLabel, 
+                    textAlign: 'center', 
+                    marginBottom: rs(2) 
+                  }}>
+                    {f.label}
+                  </Text>
+                  <Text style={{ 
+                    fontSize: nz(10), 
+                    lineHeight: nz(13), 
+                    color: C.featureSub, 
+                    textAlign: 'center', 
+                    fontWeight: '500' 
+                  }}>
+                    {f.sub}
+                  </Text>
                 </View>
-                {i < FEATURES.length - 1 && <View style={{ width: 1, height: rs(40), backgroundColor: C.featureDivider, alignSelf: 'center' }} />}
+                {i < FEATURES.length - 1 && (
+                  <View style={{ 
+                    width: 1, 
+                    height: rs(35), 
+                    backgroundColor: C.featureDivider, 
+                    alignSelf: 'center' 
+                  }} />
+                )}
               </React.Fragment>
             );
           })}
         </View>
 
-        {/* ── Promo ── */}
+        {/* ── Promo Section ── */}
         <LinearGradient
           colors={C.promoGradient}
-          start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
-          style={[st.promoCard, { borderRadius: rs(20), padding: rs(20), marginBottom: rs(12), minHeight: rs(180) }]}
+          start={{ x: 0, y: 0 }} 
+          end={{ x: 1, y: 1 }}
+          style={[st.promoCard, { 
+            borderRadius: rs(18), 
+            padding: rs(16), 
+            marginBottom: rs(20), 
+            minHeight: rs(160),
+          }]}
         >
-          <View style={[st.promoLeft, { paddingRight: rs(8) }]}>
-            <Text style={{ fontSize: nz(20), lineHeight: nz(32), fontWeight: '800', color: C.promoTitle }}>Make Every</Text>
-            <Text style={{ fontSize: nz(20), lineHeight: nz(16), fontWeight: '800', color: C.promoTitle }}>Movie Moment</Text>
-            <Text style={{ fontSize: nz(20), lineHeight: nz(36), fontWeight: '800', color: GOLD, marginBottom: rs(6) }}>Extra Special</Text>
-            <View style={{ width: rs(36), height: rs(2.5), backgroundColor: GOLD, borderRadius: 2, marginBottom: rs(10) }} />
-            <Text style={{ fontSize: nz(13), lineHeight: nz(18), color: C.promoDesc }}>Order your favorites, earn rewards and enjoy more!</Text>
+          <View style={[st.promoLeft, { paddingRight: rs(12) }]}>
+            <Text style={{ 
+              fontSize: nz(18), 
+              lineHeight: nz(24), 
+              fontWeight: '800', 
+              color: C.promoTitle 
+            }}>
+              Make Every{' '}
+              <Text style={{ color: GOLD }}>Movie Moment</Text>
+            </Text>
+            <Text style={{ 
+              fontSize: nz(18), 
+              lineHeight: nz(24), 
+              fontWeight: '800', 
+              color: GOLD,
+              marginBottom: rs(8),
+            }}>
+              Extra Special
+            </Text>
+            <View style={{ 
+              width: rs(30), 
+              height: rs(2), 
+              backgroundColor: GOLD, 
+              borderRadius: 2, 
+              marginBottom: rs(8) 
+            }} />
+            <Text style={{ 
+              fontSize: nz(12), 
+              lineHeight: nz(17), 
+              color: C.promoDesc 
+            }}>
+              Order your favorites, earn rewards{'\n'}and enjoy more!
+            </Text>
           </View>
-          <View style={{ width: SW * 0.3, height: rs(160), borderRadius: rs(12), justifyContent: 'center', alignItems: 'center' }}>
-            <LottieView ref={lottieRef} source={require('../../../assets/entertainment.json')} style={{ width: SW * 0.42, height: rs(170) }} autoPlay loop />
+          <View style={{ 
+            width: SW * 0.3, 
+            height: rs(140), 
+            borderRadius: rs(12), 
+            justifyContent: 'center', 
+            alignItems: 'center',
+          }}>
+            <LottieView 
+              ref={lottieRef} 
+              source={require('../../../assets/entertainment.json')} 
+              style={{ width: SW * 0.38, height: rs(150) }} 
+              autoPlay 
+              loop 
+            />
           </View>
         </LinearGradient>
 
         {/* ── Footer ── */}
-        <View style={{ paddingVertical: rs(20), alignItems: 'center', justifyContent: 'center' }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ fontSize: nz(13), color: C.footerText, fontWeight: '500' }}>Made with </Text>
-            <Heart size={rs(19)} color="#FF4B4B" fill="#FF4B4B" strokeWidth={2} />
-            <Text style={{ fontSize: nz(13), color: C.footerText, fontWeight: '500' }}> by </Text>
-            <Text style={{ fontSize: nz(14), color: C.footerBrand, fontWeight: '700' }}>Alfennzo</Text>
+        <View style={{ 
+          paddingVertical: rs(24),
+          paddingBottom: rs(32), // Extra padding at bottom
+          alignItems: 'center', 
+          justifyContent: 'center',
+        }}>
+          <View style={{ 
+            flexDirection: 'row', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            flexWrap: 'wrap',
+          }}>
+            <Text style={{ fontSize: nz(13), color: C.footerText, fontWeight: '500' }}>
+              Made with{' '}
+            </Text>
+            <Heart size={rs(18)} color="#FF4B4B" fill="#FF4B4B" strokeWidth={2} />
+            <Text style={{ fontSize: nz(13), color: C.footerText, fontWeight: '500' }}>
+              {' '}by{' '}
+            </Text>
+            <Text style={{ fontSize: nz(14), color: C.footerBrand, fontWeight: '700' }}>
+              Alfennzo
+            </Text>
           </View>
         </View>
       </ScrollView>
 
       {/* ── Coming Soon Modal ── */}
-      <Modal visible={comingSoon} transparent animationType="none" onRequestClose={closeComingSoon} statusBarTranslucent>
-        <Pressable style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.55)', justifyContent: 'center', alignItems: 'center', paddingHorizontal: rs(32) }} onPress={closeComingSoon}>
+      <Modal 
+        visible={comingSoon} 
+        transparent 
+        animationType="none" 
+        onRequestClose={closeComingSoon} 
+        statusBarTranslucent
+      >
+        <Pressable 
+          style={{ 
+            flex: 1, 
+            backgroundColor: 'rgba(0,0,0,0.55)', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            paddingHorizontal: rs(32) 
+          }} 
+          onPress={closeComingSoon}
+        >
           <Animated.View
             style={{
               backgroundColor: C.modalBg,
-              borderRadius: rs(24), padding: rs(28),
-              borderWidth: 1, borderColor: C.modalBorder,
-              width: '100%', alignItems: 'center',
-              shadowColor: '#000', shadowOffset: { width: 0, height: 8 },
-              shadowOpacity: isDark ? 0.5 : 0.15, shadowRadius: 20, elevation: 12,
+              borderRadius: rs(24), 
+              padding: rs(28),
+              borderWidth: 1, 
+              borderColor: C.modalBorder,
+              width: '100%', 
+              alignItems: 'center',
+              shadowColor: '#000', 
+              shadowOffset: { width: 0, height: 8 },
+              shadowOpacity: isDark ? 0.5 : 0.15, 
+              shadowRadius: 20, 
+              elevation: 12,
               transform: [
-                { scale: modalAnim.interpolate({ inputRange: [0, 1], outputRange: [0.85, 1] }) },
+                { scale: modalAnim.interpolate({ 
+                  inputRange: [0, 1], 
+                  outputRange: [0.85, 1] 
+                })},
               ],
               opacity: modalAnim,
             }}
           >
-
-            {/* Lottie */}
-            <View style={{ width: rs(180), height: rs(120), marginBottom: rs(16) }}>
+            <View style={{ 
+              width: rs(160), 
+              height: rs(110), 
+              marginBottom: rs(14)
+            }}>
               <LottieView
                 source={require('../../../assets/coming_soon.json')}
-                style={{ width: rs(180), height: rs(120) }}
-                autoPlay loop
+                style={{ width: rs(160), height: rs(110) }}
+                autoPlay 
+                loop
+                useNativeLooping
               />
             </View>
-            <Text style={{ fontSize: nz(20), fontWeight: '800', color: C.modalText, textAlign: 'center', marginBottom: rs(10) }}>
+            <Text style={{ 
+              fontSize: nz(18), 
+              fontWeight: '800', 
+              color: C.modalText, 
+              textAlign: 'center', 
+              marginBottom: rs(8) 
+            }}>
               QR Scan Feature
             </Text>
-            <Text style={{ fontSize: nz(13), color: C.modalSub, textAlign: 'center', lineHeight: nz(20), marginBottom: rs(24) }}>
-             Not available in app. Scan QR code to order on website.
+            <Text style={{ 
+              fontSize: nz(12), 
+              color: C.modalSub, 
+              textAlign: 'center', 
+              lineHeight: nz(18), 
+              marginBottom: rs(20) 
+            }}>
+              Not available in app. Scan QR code{'\n'}to order on website.
             </Text>
-            {/* Close button */}
             <TouchableOpacity
-              style={{ backgroundColor: GREEN, borderRadius: rs(14), paddingVertical: rs(13), width: '100%', alignItems: 'center' }}
+              style={{ 
+                backgroundColor: GREEN, 
+                borderRadius: rs(14), 
+                paddingVertical: rs(13), 
+                width: '100%', 
+                alignItems: 'center' 
+              }}
               onPress={closeComingSoon}
               activeOpacity={0.85}
             >
-              <Text style={{ color: '#fff', fontSize: nz(15), fontWeight: '700' }}>Got it!</Text>
+              <Text style={{ color: '#fff', fontSize: nz(14), fontWeight: '700' }}>
+                Got it!
+              </Text>
             </TouchableOpacity>
           </Animated.View>
         </Pressable>
@@ -223,16 +417,87 @@ export default function HomeScreen() {
 }
 
 const st = StyleSheet.create({
-  stickyHeader:    { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1000, borderBottomWidth: StyleSheet.hairlineWidth, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 4, elevation: 4 },
-  headerContent:   { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16 },
-  hero:            { flexDirection: 'row', alignItems: 'flex-start' },
-  heroLeft:        { flex: 1 },
-  heroRight:       { overflow: 'hidden' },
-  heroImg:         { width: '100%', height: '100%', position: 'absolute', zIndex: 10, top: 0, right: 0 },
-  scanBtn:         { flexDirection: 'row', alignItems: 'center', borderWidth: 1.5, alignSelf: 'flex-start', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 3 },
-  featureCard:     { flexDirection: 'row', borderWidth: 1.5, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 8, elevation: 3 },
-  featureCol:      { flex: 1, alignItems: 'center', justifyContent: 'flex-start' },
-  featureIconWrap: { alignItems: 'center', justifyContent: 'center', elevation: 2 },
-  promoCard:       { flexDirection: 'row', alignItems: 'center', overflow: 'hidden', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 8, elevation: 3 },
-  promoLeft:       { flex: 1 },
+  stickyHeader: { 
+    position: 'absolute', 
+    top: 0, 
+    left: 0, 
+    right: 0, 
+    zIndex: 1000, 
+    borderBottomWidth: StyleSheet.hairlineWidth, 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 2 }, 
+    shadowOpacity: 0.08, 
+    shadowRadius: 4, 
+    elevation: 4 
+  },
+  headerContent: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    paddingHorizontal: 16 
+  },
+  hero: { 
+    flexDirection: 'row', 
+    alignItems: 'flex-start',
+  },
+  heroLeft: { 
+    flex: 1,
+  },
+  heroRight: { 
+    overflow: 'hidden',
+    marginLeft: 8, // Small gap from text
+  },
+  heroImg: { 
+    width: '100%', 
+    height: '100%', 
+    position: 'absolute', 
+    zIndex: 10, 
+    top: 0, 
+    right: 0,
+  },
+  scanBtn: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    borderWidth: 1.5, 
+    alignSelf: 'flex-start', 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 2 }, 
+    shadowOpacity: 0.1, 
+    shadowRadius: 4, 
+    elevation: 3,
+  },
+  featureCard: { 
+    flexDirection: 'row', 
+    borderWidth: 1.5, 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 2 }, 
+    shadowOpacity: 0.08, 
+    shadowRadius: 8, 
+    elevation: 3,
+    justifyContent: 'space-around',
+  },
+  featureCol: { 
+    flex: 1, 
+    alignItems: 'center', 
+    justifyContent: 'flex-start',
+    paddingHorizontal: 4,
+  },
+  featureIconWrap: { 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    elevation: 2,
+  },
+  promoCard: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    overflow: 'hidden', 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 2 }, 
+    shadowOpacity: 0.1, 
+    shadowRadius: 8, 
+    elevation: 3,
+  },
+  promoLeft: { 
+    flex: 1,
+  },
 });

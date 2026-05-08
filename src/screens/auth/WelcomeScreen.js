@@ -60,7 +60,6 @@ export default function WelcomeScreen() {
         otpErrBorder: '#FF3B30',
         otpFocus:     '#48BB78',
         labelColor:   isDark ? '#8891A4' : '#666666',
-        // Slider stays white/translucent always — it's over the video
         sliderTrackBg:'rgba(255,255,255,0.21)',
         sliderBorder: 'rgba(225,225,225,0.64)',
         sliderText:   'rgba(255,255,255,0.79)',
@@ -68,7 +67,6 @@ export default function WelcomeScreen() {
         thumbBg:      '#FFFFFF',
     };
 
-    // ── Slider dimensions ─────────────────────────────────────────────────
     const SLIDER_H_PAD  = rs(40);
     const SLIDER_WIDTH  = SCREEN_WIDTH - SLIDER_H_PAD;
     const THUMB_SIZE    = rs(56);
@@ -267,7 +265,6 @@ export default function WelcomeScreen() {
         focusedPinCodeContainerStyle: { borderColor: otpError ? C.otpErrBorder : C.otpFocus, borderWidth: rs(2.5) },
     }), [rs, nz, otpError, isDark]);
 
-    // ── Welcome (slider over video) ───────────────────────────────────────
     const renderWelcome = () => (
         <View style={{ flex: 1, justifyContent: "flex-end", alignItems: "center" }}>
             <View style={{ paddingBottom: Math.max(insets.bottom + rs(30)), alignItems: "center", paddingHorizontal: rs(20) }}>
@@ -311,7 +308,6 @@ export default function WelcomeScreen() {
         </View>
     );
 
-    // ── Phone input ───────────────────────────────────────────────────────
     const renderPhoneInput = () => (
         <View style={{ width: "100%" }}>
             <Text style={{ color: C.labelColor, fontWeight: "600", letterSpacing: 1.5, fontSize: nz(13), marginBottom: rs(10), marginLeft: rs(4) }}>
@@ -370,7 +366,6 @@ export default function WelcomeScreen() {
         </View>
     );
 
-    // ── OTP input ─────────────────────────────────────────────────────────
     const renderOtpInput = () => (
         <TouchableOpacity style={{ width: "100%" }} activeOpacity={1} onPress={() => otpInputRef.current?.focus()}>
             <Animated.View style={[{ alignItems: "center", paddingVertical: rs(10) }, shakeOtp && { transform: [{ translateX: shakeAnimation }] }]}>
@@ -439,7 +434,6 @@ export default function WelcomeScreen() {
         </TouchableOpacity>
     );
 
-    // ── Main render ───────────────────────────────────────────────────────
     return (
         <View style={{ flex: 1, backgroundColor: "#000" }}>
             {/* Video BG — always fullscreen, unaffected by theme */}

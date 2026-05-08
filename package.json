@@ -10,7 +10,10 @@
   },
   "dependencies": {
     "@chatwoot/react-native-widget": "^0.0.21",
-    "@react-native-async-storage/async-storage": "2.2.0",
+    "@react-native-async-storage/async-storage": "^2.2.0",
+    "@react-native-community/cli-platform-android": "^20.1.3",
+    "@react-native-community/cli-platform-ios": "^20.1.3",
+    "@react-native-community/netinfo": "11.4.1",
     "@react-navigation/bottom-tabs": "^7.15.10",
     "@react-navigation/native": "^7.2.2",
     "@react-navigation/native-stack": "^7.14.12",
@@ -20,14 +23,16 @@
     "expo": "~54.0.33",
     "expo-application": "~7.0.8",
     "expo-av": "^16.0.8",
+    "expo-build-properties": "~1.0.10",
     "expo-linear-gradient": "~15.0.8",
     "expo-status-bar": "~3.0.9",
     "lottie-react-native": "~7.3.1",
     "lucide-react-native": "^1.14.0",
     "moti": "^0.30.0",
     "nullthrows": "^1.1.1",
-    "react": "19.1.0",
-    "react-native": "0.81.5",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-native": "^0.81.5",
     "react-native-gesture-handler": "~2.28.0",
     "react-native-gifted-chat": "^3.3.2",
     "react-native-image-picker": "^8.2.1",
@@ -38,5 +43,8 @@
     "react-native-webview": "13.15.0",
     "zustand": "^5.0.12"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "@react-native-community/cli": "^20.1.3"
+  }
 }

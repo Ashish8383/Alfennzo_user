@@ -62,6 +62,7 @@ export default function ProfileScreen() {
                             source={require("../../../assets/profile.json")}
                             style={{ width: rs(100), height: rs(100) }}
                             autoPlay loop
+                            useNativeLooping
                         />
                     </View>
                     <View style={[st.profileInfo, { marginLeft: rs(16) }]}>

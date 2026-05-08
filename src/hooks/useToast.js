@@ -11,7 +11,6 @@ export function useToast() {
   const toastTimeoutRef = useRef(null);
 
   const showToast = useCallback((message, type = "info", duration = 3000) => {
-    // Clear any existing timeout
     if (toastTimeoutRef.current) {
       clearTimeout(toastTimeoutRef.current);
     }
@@ -23,7 +22,6 @@ export function useToast() {
       duration,
     });
 
-    // Auto hide
     toastTimeoutRef.current = setTimeout(() => {
       hideToast();
     }, duration);
@@ -36,7 +34,6 @@ export function useToast() {
     }
   }, []);
 
-  // Convenience methods
   const success = useCallback((message, duration) => {
     showToast(message, "success", duration);
   }, [showToast]);

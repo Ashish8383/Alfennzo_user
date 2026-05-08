@@ -23,9 +23,7 @@ export default function AppNavigator() {
   const initializeAuth = async () => {
     try {
       const isAuthenticated = await AuthService.initializeAuth();
-      if (isAuthenticated) console.log("✅ User is authenticated");
     } catch (error) {
-      console.log("❌ Auth initialization error:", error);
       logout();
     } finally {
       setIsAuthLoading(false);
@@ -49,14 +47,12 @@ export default function AppNavigator() {
       }}
     >
       {!isLoggedIn ? (
-        // ── Unauthenticated Screens ───────────────────────────────────────
         <Stack.Screen 
           name="Welcome" 
           component={WelcomeScreen}
           options={{ gestureEnabled: false }}
         />
       ) : (
-        // ── Authenticated Screens ─────────────────────────────────────────
         <>
           <Stack.Screen 
             name="MainTabs" 

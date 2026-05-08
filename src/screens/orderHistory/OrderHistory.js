@@ -30,7 +30,11 @@ const ITEMS_PER_PAGE = 10;
 const MODAL_THRESHOLD = SCREEN_HEIGHT * 0.3;
 const FILTER_TABS = ["All", "Cancelled"];
 
-// ─── Skeleton ──────────────────────────────────────────────────────────────────
+const formatPrice = (value) => {
+  const num = Number(value);
+  return isNaN(num) ? '0.00' : num.toFixed(2);
+};
+
 const OrderSkeleton = ({ rs, isDark }) => {
   const shimmerAnim = useRef(new Animated.Value(0)).current;
 
@@ -62,7 +66,6 @@ const OrderSkeleton = ({ rs, isDark }) => {
       marginHorizontal: rs(16),
       overflow: 'hidden',
     }}>
-      {/* Card Header skeleton */}
       <View style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -77,18 +80,15 @@ const OrderSkeleton = ({ rs, isDark }) => {
           <Animated.View style={{ width: rs(80), height: rs(12), backgroundColor: C.shimmer, borderRadius: rs(4), opacity }} />
         </View>
       </View>
-      {/* Items skeleton */}
       <View style={{ padding: rs(12) }}>
         <Animated.View style={{ width: '80%', height: rs(14), backgroundColor: C.shimmer, borderRadius: rs(4), opacity, marginBottom: rs(8) }} />
         <Animated.View style={{ width: '60%', height: rs(14), backgroundColor: C.shimmer, borderRadius: rs(4), opacity }} />
       </View>
-      {/* Status strip skeleton */}
       <Animated.View style={{ height: rs(42), backgroundColor: C.shimmer, opacity }} />
     </View>
   );
 };
 
-// ─── Main ──────────────────────────────────────────────────────────────────────
 export default function OrderHistoryScreen() {
   const { rs, nz } = useResponsive();
   const insets = useSafeAreaInsets();
@@ -96,11 +96,9 @@ export default function OrderHistoryScreen() {
   const { error: showError } = useToast();
   const navigation = useNavigation();
 
-  // Two separate lottie refs — one per tab
   const lottieAllRef = useRef(null);
   const lottieCancelledRef = useRef(null);
 
-  // ── Palette ──────────────────────────────────────────────────────────────────
   const C = {
     bg: isDark ? '#0D0F14' : '#F5F7FA',
     card: isDark ? '#1C1F2E' : '#FFFFFF',
@@ -110,41 +108,29 @@ export default function OrderHistoryScreen() {
     text: isDark ? '#E2E6F0' : '#1A1D23',
     textSub: isDark ? '#8891A4' : '#6B7591',
     textMuted: isDark ? '#4A5168' : '#9EA8BB',
-    
-    // Status colors
     green: isDark ? '#66BB6A' : '#2B8A5A',
     greenBg: isDark ? '#1A2E24' : '#E8F5E9',
     blue: isDark ? '#64B5F6' : '#1565C0',
     blueBg: isDark ? '#1B2A4A' : '#E3F2FD',
     red: isDark ? '#EF9A9A' : '#C62828',
     redBg: isDark ? '#2A1515' : '#FFEBEE',
-    
-    // Theme-specific accent colors
-    primary: isDark ? '#66BB6A' : '#1565C0', // Green for dark, Blue for light
+    primary: isDark ? '#66BB6A' : '#1565C0',
     primaryBg: isDark ? '#1A2E24' : '#E3F2FD',
     primaryLight: isDark ? '#81C784' : '#42A5F5',
     primaryDark: isDark ? '#43A047' : '#0D47A1',
-    
-    // Header gradient (using solid colors as fallback)
     headerBg: isDark ? '#1A2E24' : '#48BB78',
     headerText: '#FFFFFF',
-    
-    // Tab colors
     tabActiveBg: isDark ? '#48BB78' : '#48BB78',
     tabInactiveBg: isDark ? '#1C1F2E' : '#dddddd',
     tabActiveText: '#FFFFFF',
     tabInactiveText: isDark ? '#aca8a8' : '#030303',
-    
-    // Other UI elements
-    orange: isDark ? '#FFB74D' : '#F57C00', // Keeping orange for specific highlights
+    orange: isDark ? '#FFB74D' : '#F57C00',
     divider: isDark ? '#2C3347' : '#E8EAF0',
     modalBg: isDark ? '#1a1a1c' : '#FFFFFF',
     handle: isDark ? '#2C3347' : '#E0E3EB',
     backdrop: 'rgba(0,0,0,0.6)',
     shadow: isDark ? '#000' : '#000',
     searchBg: isDark ? '#1C1F2E' : '#FFFFFF',
-    
-    // Additional theme-specific elements
     iconColor: isDark ? '#66BB6A' : '#1565C0',
     statusPending: isDark ? '#FFB74D' : '#F57C00',
     statusPendingBg: isDark ? '#2A1F10' : '#FFF3E0',
@@ -170,7 +156,6 @@ export default function OrderHistoryScreen() {
   const isFirstLoad = useRef(true);
   const isFetchingRef = useRef(false);
 
-  // ── Fetch ───────────────────────────────────────────────────────────────────
   useFocusEffect(
     useCallback(() => {
       if (isFirstLoad.current) { fetchOrders(1, true); isFirstLoad.current = false; }
@@ -217,7 +202,6 @@ export default function OrderHistoryScreen() {
     if (!loadingMore && hasMore && !isFetchingRef.current) fetchOrders(currentPage + 1);
   };
 
-  // ── Client-side filter ──────────────────────────────────────────────────────
   const filteredOrders = orders.filter(order => {
     const q = searchQuery.toLowerCase();
     const matchesSearch =
@@ -230,7 +214,6 @@ export default function OrderHistoryScreen() {
     return matchesSearch && matchesFilter;
   });
 
-  // ── Modal helpers ───────────────────────────────────────────────────────────
   const openModal = () => {
     setModalVisible(true);
     dragY.setValue(0);
@@ -257,7 +240,6 @@ export default function OrderHistoryScreen() {
     navigation.navigate('ChatSupport', { orderData, initialMessage: message });
   };
 
-  // ── PanResponder ────────────────────────────────────────────────────────────
   const panResponder = useRef(PanResponder.create({
     onStartShouldSetPanResponder: () => false,
     onMoveShouldSetPanResponder: (_, g) => Math.abs(g.dy) > 10 && Math.abs(g.dy) > Math.abs(g.dx),
@@ -283,9 +265,8 @@ export default function OrderHistoryScreen() {
     },
   })).current;
 
-  // ── Data helpers ────────────────────────────────────────────────────────────
   const getOrderItems = (item) => item.order || item.items || [];
-  const getOrderTotal = (item) => item.TotalAmount || item.totalAmount || getOrderItems(item).reduce((s, i) => s + (i.amount || 0) * (i.quantity || 1), 0);
+  const getOrderTotal = (item) => formatPrice(item.TotalAmount || item.totalAmount || getOrderItems(item).reduce((s, i) => s + (i.amount || 0) * (i.quantity || 1), 0));
   const getOrderId = (item) => item.OrderId || item.orderId || item.Id || item._id?.slice(-8) || "N/A";
   
   const getStatusColor = (item) => 
@@ -316,11 +297,9 @@ export default function OrderHistoryScreen() {
   const formatDate = (ds) => ds ? new Date(ds).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "";
   const formatTime = (ds) => ds ? new Date(ds).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }) : "";
 
-  // ── Empty state per tab ─────────────────────────────────────────────────────
   const renderEmptyComponent = () => {
     if (loading) return null;
 
-    // Cancelled tab: plain "No orders yet" text, no lottie
     if (activeFilter === 'Cancelled') {
       return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -330,8 +309,8 @@ export default function OrderHistoryScreen() {
             style={{ width: rs(300), height: rs(150) }}
             autoPlay
             loop
+            useNativeLooping
           />
-
           <Text style={{ fontSize: nz(20), color: C.text, marginTop: rs(10), fontWeight: '700' }}>
             No Cancelled Orders
           </Text>
@@ -342,7 +321,6 @@ export default function OrderHistoryScreen() {
       );
     }
 
-    // All tab: use order.json lottie
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <LottieView
@@ -351,8 +329,8 @@ export default function OrderHistoryScreen() {
           style={{ width: rs(300), height: rs(150) }}
           autoPlay
           loop
+          useNativeLooping
         />
-
         <Text style={{ fontSize: nz(20), color: C.text, marginTop: rs(10), fontWeight: '700' }}>
           No Orders Yet
         </Text>
@@ -363,7 +341,6 @@ export default function OrderHistoryScreen() {
     );
   };
 
-  // ── Order Card ──────────────────────────────────────────────────────────────
   const renderOrderItem = ({ item }) => {
     const orderItems = getOrderItems(item);
     const statusColor = getStatusColor(item);
@@ -388,7 +365,6 @@ export default function OrderHistoryScreen() {
         activeOpacity={0.7}
         onPress={() => handleOrderPress(item)}
       >
-        {/* ── Header: logo + name + chevron ── */}
         <View style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -409,7 +385,6 @@ export default function OrderHistoryScreen() {
           }}>
             <Ionicons name="restaurant" size={rs(22)} color={C.primary} />
           </View>
-
           <View style={{ flex: 1 }}>
             <Text style={{ fontSize: nz(15), fontWeight: '700', color: C.text }} numberOfLines={1}>
               {item.restaurantName || 'Restaurant'}
@@ -420,11 +395,8 @@ export default function OrderHistoryScreen() {
               </Text>
             ) : null}
           </View>
-
           <Ionicons name="chevron-forward" size={rs(18)} color={C.textMuted} />
         </View>
-
-        {/* ── Items list (up to 3) ── */}
         <View style={{ paddingHorizontal: rs(14), paddingTop: rs(10), paddingBottom: rs(6) }}>
           {orderItems.slice(0, 3).map((oi, idx) => (
             <View key={idx} style={{ flexDirection: 'row', alignItems: 'center', gap: rs(10), marginBottom: rs(6) }}>
@@ -455,8 +427,6 @@ export default function OrderHistoryScreen() {
             </Text>
           )}
         </View>
-
-        {/* ── Status strip ── */}
         <View style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -479,7 +449,6 @@ export default function OrderHistoryScreen() {
     );
   };
 
-  // ── Modal Content ───────────────────────────────────────────────────────────
   const renderModalContent = () => {
     if (!selectedOrder) return null;
     const orderItems = getOrderItems(selectedOrder);
@@ -504,17 +473,12 @@ export default function OrderHistoryScreen() {
           { scale: modalScaleAnim },
         ],
       }} {...panResponder.panHandlers}>
-
-        {/* Handle */}
         <View style={{ alignItems: 'center', paddingVertical: rs(12) }}>
           <View style={{ width: 36, height: 4, borderRadius: 2, backgroundColor: C.handle }} />
           <Text style={{ color: C.textMuted, fontSize: nz(10), marginTop: rs(4) }}>Drag down to close</Text>
         </View>
-
         <ScrollView showsVerticalScrollIndicator={false} bounces={false} scrollEnabled={!isDragging.current}>
           <View style={{ padding: rs(20) }}>
-
-            {/* Location */}
             {(selectedOrder.restaurantName || selectedOrder.seatNo) && (
               <View style={{ marginTop: rs(20) }}>
                 <Text style={{ color: C.text, fontSize: nz(16), fontWeight: '700', marginBottom: rs(12) }}>Location</Text>
@@ -549,8 +513,6 @@ export default function OrderHistoryScreen() {
                 </View>
               </View>
             )}
-
-            {/* Items */}
             <View style={{ marginTop: rs(20) }}>
               <Text style={{ color: C.text, fontSize: nz(16), fontWeight: '700', marginBottom: rs(12) }}>
                 Items ({orderItems.length})
@@ -607,14 +569,12 @@ export default function OrderHistoryScreen() {
                       </View>
                     </View>
                     <Text style={{ color: C.text, fontSize: nz(14), fontWeight: '700', marginLeft: rs(12) }}>
-                      ₹{(item.amount || 0) * (item.quantity || 1)}
+                      ₹{formatPrice((item.amount || 0) * (item.quantity || 1))}
                     </Text>
                   </View>
                 ))}
               </View>
             </View>
-
-            {/* Bill */}
             <View style={{ marginTop: rs(20) }}>
               <Text style={{ color: C.text, fontSize: nz(16), fontWeight: '700', marginBottom: rs(12) }}>Bill Details</Text>
               <View style={{ backgroundColor: C.surface, borderRadius: rs(12), padding: rs(16), borderWidth: 1, borderColor: C.surfaceBorder }}>
@@ -626,7 +586,7 @@ export default function OrderHistoryScreen() {
                 ].filter(r => r.show).map((row, i) => (
                   <View key={i} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: rs(8) }}>
                     <Text style={{ color: C.textSub, fontSize: nz(13) }}>{row.label}</Text>
-                    <Text style={{ color: C.text, fontSize: nz(13), fontWeight: '500' }}>₹{row.value}</Text>
+                    <Text style={{ color: C.text, fontSize: nz(13), fontWeight: '500' }}>₹{formatPrice(row.value)}</Text>
                   </View>
                 ))}
                 <View style={{
@@ -634,12 +594,10 @@ export default function OrderHistoryScreen() {
                   borderTopWidth: 1, borderTopColor: C.divider, paddingTop: rs(12), marginTop: rs(4),
                 }}>
                   <Text style={{ color: C.text, fontSize: nz(16), fontWeight: '700' }}>Total</Text>
-                  <Text style={{ color: C.primary, fontSize: nz(18), fontWeight: '800' }}>₹{totalAmount}</Text>
+                  <Text style={{ color: C.primary, fontSize: nz(18), fontWeight: '800' }}>₹{formatPrice(totalAmount)}</Text>
                 </View>
               </View>
             </View>
-
-            {/* Order Info */}
             <View style={{ marginTop: rs(20) }}>
               <Text style={{ color: C.text, fontSize: nz(16), fontWeight: '700', marginBottom: rs(12) }}>Order Info</Text>
               <View style={{ backgroundColor: C.surface, borderRadius: rs(12), padding: rs(16), borderWidth: 1, borderColor: C.surfaceBorder }}>
@@ -661,8 +619,6 @@ export default function OrderHistoryScreen() {
                 </View>
               </View>
             </View>
-
-            {/* Help Button */}
             <TouchableOpacity
               style={{
                 backgroundColor: C.primaryBg,
@@ -687,8 +643,6 @@ export default function OrderHistoryScreen() {
                 Need Help with this Order?
               </Text>
             </TouchableOpacity>
-
-            {/* Close Button */}
             <TouchableOpacity
               style={{
                 backgroundColor: C.primary,
@@ -702,7 +656,6 @@ export default function OrderHistoryScreen() {
             >
               <Text style={{ color: '#FFF', fontSize: nz(16), fontWeight: '600' }}>Close</Text>
             </TouchableOpacity>
-
             <View style={{ height: rs(20) }} />
           </View>
         </ScrollView>
@@ -710,12 +663,9 @@ export default function OrderHistoryScreen() {
     );
   };
 
-  // ── Render ──────────────────────────────────────────────────────────────────
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
       <StatusBar barStyle="light-content" backgroundColor={C.headerBg} />
-
-      {/* ── Header ── */}
       <View style={{
         paddingTop: insets.top,
         backgroundColor: C.headerBg,
@@ -733,8 +683,6 @@ export default function OrderHistoryScreen() {
           <Text style={{ fontSize: nz(18), fontWeight: '700', color: C.headerText }}>My Order</Text>
         </View>
       </View>
-
-      {/* ── Filter Tabs ── */}
       <View style={{
         flexDirection: 'row',
         paddingHorizontal: rs(16),
@@ -764,8 +712,6 @@ export default function OrderHistoryScreen() {
           </TouchableOpacity>
         ))}
       </View>
-
-      {/* ── Orders FlatList ── */}
       <FlatList
         data={loading ? Array(6).fill({}) : filteredOrders}
         renderItem={({ item }) =>
@@ -806,8 +752,6 @@ export default function OrderHistoryScreen() {
         windowSize={21}
         initialNumToRender={10}
       />
-
-      {/* ── Modal ── */}
       <Modal
         visible={modalVisible}
         transparent

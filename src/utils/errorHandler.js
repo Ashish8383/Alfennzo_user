@@ -2,7 +2,6 @@ import { Alert } from "react-native";
 
 export const handleApiError = (error) => {
   if (error.response) {
-    // Server responded with error status
     const { status, data } = error.response;
     
     switch (status) {
@@ -50,13 +49,11 @@ export const handleApiError = (error) => {
         );
     }
   } else if (error.request) {
-    // Network error
     Alert.alert(
       "Network Error",
       "Please check your internet connection and try again."
     );
   } else {
-    // Other errors
     Alert.alert(
       "Error",
       error.message || "An unexpected error occurred."

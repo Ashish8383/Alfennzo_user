@@ -1,4 +1,3 @@
-// utils/chatwoot.js
 import ChatwootAPI from '../api/chatwootApi';
 
 const getOrderItems = (o) => Array.isArray(o?.order) ? o.order : Array.isArray(o?.items) ? o.items : [];

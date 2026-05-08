@@ -19,7 +19,6 @@ export function ToastProvider({ children }) {
       duration,
     });
 
-    // Auto hide for non-loading toasts
     if (type !== "loading" && duration > 0) {
       setTimeout(() => {
         setToast(prev => ({ ...prev, visible: false }));
@@ -31,7 +30,6 @@ export function ToastProvider({ children }) {
     setToast(prev => ({ ...prev, visible: false }));
   }, []);
 
-  // Convenience methods
   const success = useCallback((message, duration) => {
     showToast(message, "success", duration || 3000);
   }, [showToast]);

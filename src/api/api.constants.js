@@ -1,6 +1,4 @@
-// api/endpoints.js
 export const API_ENDPOINTS = {
-  // Auth endpoints
   AUTH: {
     LOGIN: "/user/login",
     VERIFY_OTP: "/user/verifyOTP",
@@ -9,7 +7,6 @@ export const API_ENDPOINTS = {
     CHECK_AUTH: "/user/check-auth",
   },
   
-  // User endpoints
   USER: {
     PROFILE: "/user/profile",
     UPDATE_PROFILE: "/user/update-profile",

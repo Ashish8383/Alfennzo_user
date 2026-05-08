@@ -19,7 +19,6 @@ const CURRENT_YEAR = new Date().getFullYear();
 const DAYS  = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, '0'));
 const YEARS = Array.from({ length: 100 }, (_, i) => String(CURRENT_YEAR - i));
 
-// ─── Date Picker ──────────────────────────────────────────────────────────────
 const DatePickerModal = ({ visible, value, onConfirm, onCancel, isDark }) => {
     const { rs, nz } = useResponsive();
 
@@ -174,7 +173,6 @@ const displayDate = (val) => {
     return `${dd} ${MONTHS[parseInt(mm, 10) - 1]} ${yyyy}`;
 };
 
-// ─── Main Screen ──────────────────────────────────────────────────────────────
 export default function EditProfileScreen() {
     const { rs, nz }    = useResponsive();
     const insets         = useSafeAreaInsets();
@@ -278,6 +276,7 @@ export default function EditProfileScreen() {
                             source={require('../../../assets/profile.json')}
                             style={{ width: rs(100), height: rs(100) }}
                             autoPlay loop
+                            useNativeLooping
                         />
                     </View>
                     <Text style={{ color: C.textSub, fontSize: nz(12), marginTop: rs(8), fontWeight: '500' }}>

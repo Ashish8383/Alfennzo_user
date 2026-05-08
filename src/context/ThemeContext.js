@@ -1,4 +1,3 @@
-// context/ThemeContext.js
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useColorScheme } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -74,7 +73,6 @@ export function ThemeProvider({ children }) {
         setThemeMode(savedThemeMode);
       }
     } catch (error) {
-      console.log("Error loading theme:", error);
     } finally {
       setIsLoading(false);
     }
@@ -85,11 +83,11 @@ export function ThemeProvider({ children }) {
     try {
       await AsyncStorage.setItem("themeMode", mode);
     } catch (error) {
-      console.log("Error saving theme:", error);
     }
   };
 
-  // Determine if dark mode is active based on theme mode
+  console.log(systemColorScheme,"asdsad",themeMode);
+
   const isDark = themeMode === 'system' 
     ? systemColorScheme === 'dark'
     : themeMode === 'dark';
@@ -106,7 +104,6 @@ export function ThemeProvider({ children }) {
       isDark, 
       themeMode,
       setTheme,
-      // Keep toggleTheme for backward compatibility
       toggleTheme: () => setTheme(isDark ? 'light' : 'dark')
     }}>
       {children}

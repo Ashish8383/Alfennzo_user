@@ -60,7 +60,6 @@ export default function Toast({
 
   useEffect(() => {
     if (visible && message) {
-      // Show toast with spring animation
       Animated.parallel([
         Animated.spring(opacity, {
           toValue: 1,
@@ -82,7 +81,6 @@ export default function Toast({
         }),
       ]).start();
 
-      // Auto hide after duration (except loading)
       if (type !== "loading") {
         const timer = setTimeout(() => {
           hideToast();
@@ -121,15 +119,12 @@ export default function Toast({
 
   const toastStyle = TOAST_TYPES[type] || TOAST_TYPES.info;
   
-  // Status bar height handling
   const statusBarHeight = Platform.OS === "ios" 
     ? insets?.top || 47 
     : StatusBar.currentHeight || 24;
   
-  // Positioning - Account for status bar
   const topPosition = statusBarHeight + rs(8);
   
-  // Single sizes
   const horizontalMargin = rs(20);
   const iconSize = rs(24);
   const closeIconSize = rs(20);
@@ -138,11 +133,9 @@ export default function Toast({
   const borderRadius = rs(12);
   const gap = rs(10);
   
-  // Typography
   const fontSize = nz(15);
   const lineHeight = fontSize * 1.4;
   
-  // Colors based on variant
   const bgColor = variant === "light" 
     ? toastStyle.lightBackgroundColor 
     : toastStyle.backgroundColor;

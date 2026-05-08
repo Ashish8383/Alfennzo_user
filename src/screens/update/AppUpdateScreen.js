@@ -10,7 +10,7 @@ import { useResponsive } from '../../utils/responsive';
 import { APP_VERSION } from '../../utils/appInfo';
 
 const STORE_URL = {
-  android: 'https://play.google.com/store/apps/details?id=com.yourapp',
+  android: 'https://play.google.com/store/apps/details?id=com.alfennzo.alfennzo_user',
   ios:     'https://apps.apple.com/app/idYOURAPPID',
 };
 
@@ -79,6 +79,7 @@ export default function AppUpdateScreen() {
             style={{ width: rs(160), height: rs(160) }}
             autoPlay
             loop
+            useNativeLooping
           />
         </View>
 

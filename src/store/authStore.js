@@ -9,9 +9,7 @@ const useAuthStore = create(
       token: null,
       isLoggedIn: false,
 
-      // Login action
       login: (user, token) => {
-        console.log("🏪 Store: Login - User:", user?.fullname);
         set({
           user,
           token,
@@ -19,9 +17,7 @@ const useAuthStore = create(
         });
       },
 
-      // Logout action
       logout: () => {
-        console.log("🏪 Store: Logout");
         set({
           user: null,
           token: null,
@@ -29,20 +25,17 @@ const useAuthStore = create(
         });
       },
 
-      // Update user profile
       updateUser: (userData) => {
         set((state) => ({
           user: { ...state.user, ...userData },
         }));
       },
 
-      // Check if authenticated
       isAuthenticated: () => {
         const state = get();
         return state.isLoggedIn && !!state.token && !!state.user;
       },
 
-      // Get auth headers for API calls
       getAuthHeaders: () => {
         const state = get();
         return {
@@ -55,7 +48,6 @@ const useAuthStore = create(
       name: "auth-storage",
       storage: createJSONStorage(() => AsyncStorage),
       
-      // Only persist these fields
       partialize: (state) => ({
         user: state.user,
         token: state.token,

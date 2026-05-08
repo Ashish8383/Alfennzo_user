@@ -25,7 +25,6 @@ export default function PrivacyDataScreen() {
     const [confirmText, setConfirmText] = useState('');
     const [deleteStep, setDeleteStep] = useState(1); // 1: confirmation, 2: type confirmation
 
-    // Animation refs
     const modalScaleAnim = useRef(new Animated.Value(0)).current;
     const modalOpacityAnim = useRef(new Animated.Value(0)).current;
     const shakeAnim = useRef(new Animated.Value(0)).current;
@@ -57,7 +56,6 @@ export default function PrivacyDataScreen() {
         warningBorder: isDark ? '#4A1515' : '#FFE0B2',
     };
 
-    // Open modal animation
     const openDeleteModal = () => {
         setShowDeleteModal(true);
         setDeleteStep(1);
@@ -78,7 +76,6 @@ export default function PrivacyDataScreen() {
         ]).start();
     };
 
-    // Close modal animation
     const closeDeleteModal = () => {
         Animated.parallel([
             Animated.timing(modalScaleAnim, {
@@ -98,7 +95,6 @@ export default function PrivacyDataScreen() {
         });
     };
 
-    // Shake animation for wrong input
     const shakeModal = () => {
         Animated.sequence([
             Animated.timing(shakeAnim, { toValue: 10, duration: 50, useNativeDriver: true }),
@@ -117,10 +113,8 @@ export default function PrivacyDataScreen() {
 
     const handleDeleteConfirm = () => {
         if (deleteStep === 1) {
-            // Move to step 2 - type confirmation
             setDeleteStep(2);
         } else if (deleteStep === 2) {
-            // Check if user typed DELETE correctly
             if (confirmText.trim().toUpperCase() === 'DELETE') {
                 executeDelete();
             } else {
@@ -408,7 +402,6 @@ const st = StyleSheet.create({
     menuItem: { flexDirection: 'row', alignItems: 'center' },
     menuIcon: { justifyContent: 'center', alignItems: 'center' },
     
-    // Modal styles
     modalContainer: {
         flex: 1,
         justifyContent: 'center',

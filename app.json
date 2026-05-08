@@ -2,19 +2,27 @@
   "expo": {
     "name": "Alfennzo",
     "slug": "Alfennzo",
-    "version": "1.0.0",
+    "version": "1.0.3",
+    "userInterfaceStyle": "automatic",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.ashishson.Alfennzo"
+      "supportsTablet": false,
+      "bundleIdentifier": "com.alfennzo.user",
+      "buildNumber": "1",
+      "bitcode": false,
+      "userInterfaceStyle": "automatic",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSPhotoLibraryUsageDescription": "We need access to your photo library to allow you to select a profile picture or upload images."
+      },
+      "appleTeamId": "F4L4LP4A8J"
     },
     "android": {
       "adaptiveIcon": {
@@ -22,12 +30,30 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.ashishson.Alfennzo"
+      "package": "com.alfennzo.alfennzo_user",
+      "versionCode": 23,
+      "allowBackup": false
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-    ]
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "newArchEnabled": true,
+            "enableProguardInRelease": true,
+            "enableShrinkResourcesInReleaseBuilds": true,
+            "enableMinifyInReleaseBuilds": true
+          }
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "00333b5d-f86a-429c-9725-c91b074aef60"
+      }
+    }
   }
 }
